@@ -30,8 +30,7 @@ gcd n m
 
 -- | Euler Totient function
 phi :: Int -> Int
-phi 1 = 1
-phi m = length [x | x <-[1..m-1], gcd m x == 1]
+phi m = length [x | x <-[1..m], gcd m x == 1]
 
 -- | Alternative method
 phialt :: Int -> Int
