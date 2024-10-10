@@ -48,6 +48,7 @@ gcdTests = [ gcd 0 0      --> 0  -- gcd.#1
            , gcd 16 12    --> 4  -- gcd.#6
            , gcd 65 40    --> 5  -- gcd.#7
            , gcd 735 1239 --> 21 -- gcd.#8
+           , gcd 128 65536 --> 128
            ]
 
 phiTests :: [Assertion]
@@ -60,6 +61,7 @@ phiTests = [ phi 0  --> 0
            , phi 31 --> 30
            , phi 35 --> 24
            , phi 77 --> 60
+           , phi 12 --> 4
            ]
 
 modPowTests :: [Assertion]
@@ -74,6 +76,7 @@ modPowTests = [ modPow 0 0 1                   --> 0
               , modPow 33893 2 10000           --> 5449
               , modPow 7433893 2 10000         --> 5449
               , modPow 13481503 11237126 46340 --> 6629
+              , modPow 2 31 10 --> 8
               ]
 
 computeCoeffsTests :: [Assertion]
@@ -83,6 +86,7 @@ computeCoeffsTests = [ computeCoeffs 0 0      --> (1, 0)
                      , computeCoeffs 16 12    --> (1, -1)
                      , computeCoeffs 65 40    --> (-3, 5)
                      , computeCoeffs 735 1239 --> (27, -16)
+                     , computeCoeffs 13 14 --> (-1,1)
                      ]
 
 inverseTests :: [Assertion]
@@ -93,6 +97,7 @@ inverseTests = [ inverse 11 16 --> 3
                , inverse 12 91 --> 38
                , inverse 34 91 --> 83
                , inverse 64 91 --> 64
+               , inverse 3 11 --> 4
                ]
 
 smallestCoPrimeOfTests :: [Assertion]
@@ -102,6 +107,7 @@ smallestCoPrimeOfTests = [ smallestCoPrimeOf 1   --> 2
                          , smallestCoPrimeOf 13  --> 2
                          , smallestCoPrimeOf 30  --> 7
                          , smallestCoPrimeOf 210 --> 11
+                         , smallestCoPrimeOf 15 --> 2
                          ]
 
 genKeysTests :: [Assertion]
@@ -111,6 +117,7 @@ genKeysTests = [ genKeys 2 3         --> ((3,6),(1,6))
                , genKeys 401 937     --> ((7,375737),(213943,375737))
                , genKeys 613 997     --> ((5,611161),(243821,611161))
                , genKeys 26641 26437 --> ((7,704308117),(100607863,704308117))
+               , genKeys 5 11 --> ((3,55),(27,55))
                ]
 
 rsaEncryptTests :: [Assertion]
@@ -118,6 +125,7 @@ rsaEncryptTests = [ rsaEncrypt 4321 (3,8383)            --> 3694
                   , rsaEncrypt 324561 (5, 611161)       --> 133487
                   , rsaEncrypt 1234 (5,611161)          --> 320878
                   , rsaEncrypt 704308111 (7, 704308117) --> 704028181
+                  , rsaEncrypt 7 (3,55) --> 13
                   ]
 
 rsaDecryptTests :: [Assertion]
@@ -125,6 +133,7 @@ rsaDecryptTests = [ rsaDecrypt 3694 (5467,8383)                --> 4321
                   , rsaDecrypt 133487 (243821,611161)          --> 324561
                   , rsaDecrypt 320878 (243821,611161)          --> 1234
                   , rsaDecrypt 704028181 (100607863,704308117) --> 704308111
+                  , rsaDecrypt 13 (27,55) --> 7
                   ]
 
 -------------------------------------------------------------------------------
@@ -135,31 +144,36 @@ toIntTests :: [Assertion]
 toIntTests = [ toInt 'a' --> 0
              , toInt 'z' --> 25
              , toInt 'h' --> 7
+             , toInt 'f' --> 5
              ]
 
 toCharTests :: [Assertion]
 toCharTests = [ toChar 0  --> 'a'
               , toChar 25 --> 'z'
               , toChar 7  --> 'h'
+              , toChar 5 --> 'f'
               ]
 
 addTests :: [Assertion]
 addTests = [ add 'a' 'a' --> 'a'
            , add 'd' 's' --> 'v'
            , add 'w' 't' --> 'p'
+           , add 'z' 'g' --> 'f'
            ]
 
 subtractTests :: [Assertion]
 subtractTests = [ subtract 'a' 'a' --> 'a'
                 , subtract 'v' 's' --> 'd'
                 , subtract 'p' 'w' --> 't'
-                ]
+                , subtract 'f' 'g' --> 'z'
+                 ]
 
 ecbEncryptTests :: [Assertion]
 ecbEncryptTests = [ ecbEncrypt 'w' ""        --> ""
                   , ecbEncrypt 'd' "w"       --> "z"
                   , ecbEncrypt 'x' "bonjour" --> "ylkglro"
                   , ecbEncrypt 'k' "hello"   --> "rovvy"
+                  , ecbEncrypt 'b' "hello"   --> "ifmmp"
                   ]
 
 ecbDecryptTests :: [Assertion]
@@ -167,6 +181,7 @@ ecbDecryptTests = [ ecbDecrypt 'w' ""        --> ""
                   , ecbDecrypt 'd' "z"       --> "w"
                   , ecbDecrypt 'x' "ylkglro" --> "bonjour"
                   , ecbDecrypt 'k' "rovvy"   --> "hello"
+                  , ecbDecrypt 'b' "ifmmp"   --> "hello"
                   ]
 
 cbcEncryptTests :: [Assertion]
@@ -174,6 +189,7 @@ cbcEncryptTests = [ cbcEncrypt 'w' 'i' ""        --> ""
                   , cbcEncrypt 'd' 'i' "w"       --> "h"
                   , cbcEncrypt 'x' 'w' "bonjour" --> "ufpvgxl"
                   , cbcEncrypt 'k' 'q' "hello"   --> "hvqlj"
+                  , cbcEncrypt 'a' 'b' "ciao" --> "dllz"
                   ]
 
 cbcDecryptTests :: [Assertion]
@@ -181,6 +197,7 @@ cbcDecryptTests = [ cbcDecrypt 'w' 'i' ""        --> ""
                   , cbcDecrypt 'd' 'i' "h"       --> "w"
                   , cbcDecrypt 'x' 'w' "ufpvgxl" --> "bonjour"
                   , cbcDecrypt 'k' 'q' "hvqlj"   --> "hello"
+                  , cbcDecrypt 'a' 'b' "dllz" --> "ciao"
                   ]
 
 -------------------------------------------------------------------------------
